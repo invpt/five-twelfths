@@ -33,6 +33,8 @@ points:
   zones:
     main:
       anchor:
+        # Put the board roughly in the center of the PCB sheet
+        shift: [160, -160]
         rotate: s
       columns:
         outer:
@@ -157,6 +159,8 @@ pcbs:
       - outline: drawings
         layer: Dwgs.User
     footprints:
+      filled_zone:
+        what: ceoloide/utility_filled_zone
       keys:
         what: pg1316s
         where: true
