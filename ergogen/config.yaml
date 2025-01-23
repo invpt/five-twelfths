@@ -95,18 +95,16 @@ points:
           key:
             bind: [30, 0, 0, 0]
 outlines:
-  _wacky:
-    - what: rectangle
-      size: [16, 16]
-      where:
-        ref: main_ring_home
-        shift: [.5x, .5y-8-stag+ko]
-        rotate: 0
   __edge_cuts:
     - what: rectangle
       where: true
       bound: true
       size: [x, y]
+    - what: rectangle
+      size: [x, y]
+      where:
+        ref: main_ring_home
+        shift: [x, -stag]
   _edge_cuts:
     - what: outline
       name: __edge_cuts
@@ -123,8 +121,6 @@ outlines:
     - what: outline
       name: _edge_cuts
       expand: o
-    - what: outline
-      name: _wacky
       fillet: kr
   _mcu:
     - what: rectangle
