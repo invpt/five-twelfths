@@ -1,0 +1,10 @@
+{
+  "name": "fivetwelfths",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "ergogen ergogen/ -o out"
+  },
+  "dependencies": {
+    "ergogen": "^4.1.0"
+  }
+}

@@ -1,0 +1,221 @@
+units:
+  x: 17
+  y: 17
+
+  kx: 16
+  ky: 16
+
+  kr: 1.6
+
+  o: x-kx
+  ko: .5(x-kx)
+
+  mr: 1
+  mx: 19
+  my: 23.5
+  mx_pos: .5x + .5mx + ko
+  my_pos: y
+
+  s: 15
+
+  stag: .375y
+
+  thumb_offset: -.375x
+
+  ux: 2 * 3.4525
+  ux_pos: .5x+ko-.5ux
+  uy_pos: 17.5
+points:
+  key:
+    padding: y
+    spread: x
+    autobind: 0
+  zones:
+    main:
+      anchor:
+        rotate: s
+      columns:
+        outer:
+          key:
+          rows:
+            top:
+              skip: true
+        pinky:
+          key:
+            stagger: -stag
+          rows:
+            top:
+              skip: true
+            home:
+            bottom:
+        ring:
+          key:
+            stagger: -stag
+          rows:
+            top:
+            home:
+        middle:
+          key:
+            origin: [-.5kx, -.5ky+kr]
+            stagger: stag
+            splay: -s
+          rows:
+            bottom:
+              bind: [0, 0, 0, 10]
+        index:
+          key:
+            stagger: -stag
+          rows:
+            bottom:
+              bind: [0, 10, 0, 0]
+        inner:
+          key:
+            stagger: -stag
+          rows:
+            top:
+              bind: [0, 0, 0, 10]
+            home:
+              bind: [0, 0, 0, 10]
+            bottom:
+              bind: [0, 0, 10, 0]
+      rows:
+        bottom:
+        home:
+        top:
+    thumb:
+      anchor:
+        ref: main_inner_bottom
+        shift: [thumb_offset, -y]
+      columns:
+        tuck:
+          key:
+            origin: [-.5x - thumb_offset + kr, .5ky-kr]
+            splay: -s
+        reach:
+          key:
+            bind: [30, 0, 0, 0]
+outlines:
+  _wacky:
+    - what: rectangle
+      size: [16, 16]
+      where:
+        ref: main_ring_home
+        shift: [.5x, .5y-8-stag+ko]
+        rotate: 0
+  __edge_cuts:
+    - what: rectangle
+      where: true
+      bound: true
+      size: [x, y]
+  _edge_cuts:
+    - what: outline
+      name: __edge_cuts
+      expand: .5(kx-x)
+      joints: 1
+      fillet: kr
+  edge_cuts:
+    - what: rectangle
+      size: [mx+3, my]
+      where:
+        ref: main_inner_bottom
+        shift: [mx_pos-1.5, my_pos]
+      fillet: mr
+    - what: outline
+      name: _edge_cuts
+      expand: o
+    - what: outline
+      name: _wacky
+      fillet: kr
+  _mcu:
+    - what: rectangle
+      size: [mx-1, my]
+      fillet: mr
+  drawings:
+    - what: rectangle
+      where: true
+      size: [kx, ky]
+      fillet: kr
+    - what: outline
+      name: _mcu
+      operation: stack
+      where:
+        ref: main_inner_bottom
+        shift: [mx_pos, my_pos]
+  preview:
+    - what: outline
+      name: drawings
+    - what: outline
+      name: edge_cuts
+      operation: stack
+    - what: rectangle
+      size: [ux, 10]
+      operation: stack
+      where:
+        ref: thumb_reach
+        shift: [ux_pos, uy_pos]
+pcbs:
+  fivetwelfths:
+    template: kicad8
+    outlines:
+      - outline: edge_cuts
+      - outline: drawings
+        layer: Dwgs.User
+    footprints:
+      keys:
+        what: pg1316s
+        where: true
+        params:
+          from: GND
+          to: "{{name}}"
+      top_usb:
+        what: usb4135
+        adjust:
+          shift: [ux_pos, uy_pos]
+          rotate: -90
+        where: thumb_reach
+        params:
+          A12: GND
+          B12: GND
+          A9: V5
+          B9: V5
+          B5: SER
+          A5: SER
+      bottom_usb:
+        what: usb4135
+        adjust:
+          shift: [ux_pos, uy_pos]
+          rotate: -90
+        where: thumb_reach
+        params:
+          side: B
+          A12: GND
+          B12: GND
+          A9: V5
+          B9: V5
+          B5: SER
+          A5: SER
+      mcu:
+        what: rp2040_zero
+        where:
+          ref: main_inner_bottom
+          shift: [mx_pos, my_pos]
+        params:
+          P29: main_ring_top
+          P28: main_outer_home
+          P27: main_pinky_home
+          P26: main_ring_home
+          P15: main_outer_bottom
+          P14: main_pinky_bottom
+          P13: main_ring_bottom
+          P12: thumb_tuck
+          P11: SER
+          P10: thumb_reach
+          P9: main_inner_bottom
+          P8: main_index_bottom
+          P7: main_middle_bottom
+          P6: main_inner_home
+          P5: main_index_home
+          P4: main_middle_home
+          P3: main_inner_top
+          P2: main_index_top
+          P1: main_middle_top
