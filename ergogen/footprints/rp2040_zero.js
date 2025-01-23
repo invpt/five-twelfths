@@ -1,7 +1,5 @@
 module.exports = {
   params: {
-    side: "F",
-
     P0: { type: "net", value: "P0" },
     P1: { type: "net", value: "P1" },
     P2: { type: "net", value: "P2" },
@@ -40,6 +38,7 @@ module.exports = {
         net,
         x: pin_spacing * 3 + 1.38,
         y: top_pin_offset + pin_spacing * i,
+        vx: -3,
         vy: -1.59 + pin_spacing / 2,
         rot: 0,
         in: -1,
@@ -68,6 +67,7 @@ module.exports = {
       net,
       x: left_pin_offset - 1.38,
       y: bottom_pin_offset - i * pin_spacing,
+      vx: 3,
       vy: -pin_spacing / 2 - 1.59 + pin_spacing / 2,
       rot: 0,
       in: 1,
@@ -133,7 +133,7 @@ module.exports = {
                 "${pin.index}"
                 thru_hole
                 circle
-                (at ${0} ${pin.y + pin.vy})
+                (at ${pin.x + pin.vx} ${pin.y + pin.vy})
                 (size 0.6 0.6)
                 (drill 0.3)
                 (layers *.Cu)
@@ -160,14 +160,14 @@ module.exports = {
                     (width 0.2))
                   (gr_line
                     (start ${pin.in * Math.abs(pin.vy)} ${pin.vy})
-                    (end ${-pin.x} ${pin.vy})
+                    (end ${pin.vx} ${pin.vy})
                     (width 0.2))))
               ${"" /* trace from via to back */}
               (pad
                 "${pin.index}"
                 smd
                 custom
-                (at 0 ${pin.y + pin.vy} ${p.rot})
+                (at ${pin.x + pin.vx} ${pin.y + pin.vy} ${p.rot})
                 (size 0.25 0.25)
                 (layers B.Cu)
                 ${pin.net.str}
@@ -179,11 +179,11 @@ module.exports = {
                 (primitives
                   (gr_line
                     (start 0 0)
-                    (end ${-pin.x - pin.in * Math.abs(pin.vy)} 0)
+                    (end ${-2 * pin.x - pin.vx - pin.in * Math.abs(pin.vy)} 0)
                     (width 0.2))
                   (gr_line
-                    (start ${-pin.x - pin.in * Math.abs(pin.vy)} 0)
-                    (end ${-pin.x} ${-pin.vy})
+                    (start ${-2 * pin.x - pin.vx - pin.in * Math.abs(pin.vy)} 0)
+                    (end ${-2 * pin.x - pin.vx} ${-pin.vy})
                     (width 0.2))))`,
           )
           .join("")}
