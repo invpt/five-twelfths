@@ -161,6 +161,8 @@ pcbs:
     footprints:
       filled_zone:
         what: ceoloide/utility_filled_zone
+        params:
+          side: F&B
       keys:
         what: pg1316s
         where: true
